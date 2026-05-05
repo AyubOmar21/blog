@@ -1,0 +1,462 @@
+/* --- Global Layout --- */
+/* --- Global Transitions --- */
+body {
+    transition: background-color 1.2s ease, color 0.8s ease;
+    margin: 0;
+}
+
+/* --- Theme 1: SCRAMBLE (The Archive) --- */
+body.theme-scramble {
+    background-color: #f4ece1;
+    font-family: 'Old Standard TT', serif;
+}
+
+
+/* --- Theme 2: PRESENT (The Interface) --- */
+body.theme-present {
+    background-color: #a7defc;
+    color: #2c3e50;
+    font-family: 'Inter', sans-serif;
+}
+
+
+/* --- Theme 3: DARK (The Redacted) --- */
+body.theme-dark {
+    background-color: #0a0a0a;
+    color: #4294ff;
+    font-family: 'Special Elite', monospace;
+}
+
+.blog-header {
+    padding: 60px 20px;
+    text-align: center;
+    transition: all 1.2s ease;
+}
+
+.era-zone {
+    padding: 80px 10%;
+    min-height: 100vh;
+}
+
+/* --- The 60/40 Grid --- */
+.toc-entry {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 60px;
+    margin-bottom: 120px;
+    align-items: start;
+}
+
+/* --- LANDSCAPE (For Maps) --- */
+.image-landscape {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: rgba(0,0,0,0.05);
+    overflow: hidden;
+    margin: 20px 0;
+}
+.image-landscape img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* --- PORTRAIT (For Books) --- */
+.image-portrait {
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Centers the book horizontally */
+    padding: 30px 0;
+    background: rgba(0,0,0,0.03); /* Lighter bg to let the book pop */
+    margin: 20px 0;
+}
+.image-portrait img {
+    /* Limits height so the book doesn't swallow the whole screen */
+    max-height: 65vh; 
+    width: auto;
+    height: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Adds a "3D book" feel */
+    border-radius: 2px;
+}
+
+
+.ref-text {
+    font-size: 0.85rem;
+    margin-top: 10px;
+    opacity: 0.8;
+}
+
+/* --- Theme 1: Scramble --- */
+.era-scramble {
+    background-color: #f4ece1;
+    color: #3d2b1f;
+    font-family: 'Old Standard TT', serif;
+}
+.era-scramble h2 { font-family: 'Pinyon Script', cursive; font-size: 2.5rem; }
+.era-scramble .image-placeholder { border-color: #3d2b1f; background: #e0d1b1; }
+
+/* --- Theme 2: Present --- */
+.era-present {
+    background-color: #a7defc;
+    color: #2c3e50;
+    font-family: 'Inter', sans-serif;
+}
+.era-present .image-placeholder { background: white; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+
+/* --- Theme 3: Dark --- */
+.era-dark {
+    background-color: #0a0a0a;
+    color: #4294ff;
+    font-family: 'Special Elite', monospace;
+}
+.era-dark h2 { text-transform: uppercase; color: #ff0055; text-shadow: 0 0 10px #ff0055; }
+.era-dark .image-placeholder { background: #111; border: 1px solid #4294ff; }
+
+
+/* --- Master ToC Layout --- */
+.master-toc {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 40px 10%;
+    background-color: inherit;
+    border-bottom: 1px solid rgba(51, 51, 51, 0.3);
+    box-sizing: border-box;
+    transition: padding 0.4s ease; /* Smoothly slim down */
+}
+
+/* --- The Toggle Button --- */
+.toc-toggle-btn {
+    position: absolute;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: 1px solid currentColor;
+    color: inherit;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    display: none; /* Only show when stuck */
+    opacity: 0;
+    z-index: 1001;
+}
+
+/* --- Stuck State Tweaks --- */
+.master-toc.is-stuck {
+    padding: 15px 10%; /* Slimmer bar */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.master-toc.is-stuck .toc-toggle-btn {
+    display: block;
+    opacity: 1;
+}
+
+/* --- The Column Content --- */
+.toc-column {
+    padding: 0 20px;
+    border-left: 1px solid rgba(51, 51, 51, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.toc-column:first-of-type { border-left: none; }
+
+.toc-column h3 {
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    margin: 0;
+    margin-bottom: 25px; /* Vertical gap when at top */
+    opacity: 0.5;
+    transition: margin 0.4s ease;
+}
+
+/* When stuck, tuck the titles up */
+.master-toc.is-stuck h3 { margin-bottom: 0; }
+.master-toc.is-expanded h3 { margin-bottom: 20px; }
+
+/* --- Dropdown Animation (Industry Standard) --- */
+.collapsible-wrapper {
+    display: grid;
+    grid-template-rows: 1fr; /* Default: Open at top of page */
+    transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    width: 100%;
+}
+
+/* The actual "Hide" logic */
+.master-toc.is-stuck:not(.is-expanded) .collapsible-wrapper {
+    grid-template-rows: 0fr;
+}
+
+.collapsible-wrapper ul {
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.collapsible-wrapper li { margin-bottom: 15px; }
+
+.toc-column a {
+    text-decoration: none;
+    color: inherit;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+.toc-column ul {
+    list-style: none;
+    padding: 0;
+}
+
+
+
+.toc-column a {
+    text-decoration: none;
+    color: inherit;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.column-content {
+    position: relative;
+    width: 100%;
+}
+
+
+
+/* --- Era-specific ToC Hover Effects --- */
+
+/* Scramble: Italicizes and turns gold-ish */
+.scramble-col a:hover {
+    color: #e0d1b1;
+    font-style: italic;
+    padding-left: 10px;
+}
+
+/* Present: Modern white glow */
+.present-col a:hover {
+    color: #a7defc;
+    text-shadow: 0 0 10px #fff;
+}
+
+/* Dark: Red/Blue Glitch effect */
+.dark-col a:hover {
+    color: #ff0055;
+    text-shadow: 2px 0 #4294ff;
+    font-family: 'Special Elite', monospace;
+}
+
+/* Smooth Scrolling for the whole page */
+html {
+    scroll-behavior: smooth;
+}
+
+/* --- Responsive Media Queries --- */
+
+/* Mobile & Tablet Styles (under 768px) */
+@media (max-width: 768px) {
+    /* 1. Stack the ToC Columns */
+    .master-toc {
+        grid-template-columns: 1fr; /* Single column stack */
+        padding: 20px 5%;
+        gap: 10px;
+
+    }
+    /* 2. Remove borders and center-ish alignment */
+    .toc-column {
+        border-left: none;
+        border-bottom: 1px solid rgba(51, 51, 51, 0.1);
+        padding: 15px 0;
+    }
+
+    /* 3. Force Content to Dropdown by Default on Mobile */
+    /* We treat mobile as if it's always "stuck" in terms of layout */
+    .collapsible-wrapper {
+        grid-template-rows: 0fr; 
+    }
+
+    /* Show when the master-toc is expanded OR specifically at the top if you prefer */
+    .master-toc.is-expanded .collapsible-wrapper {
+        grid-template-rows: 1fr;
+    }
+
+    /* 4. Make the 60/40 Blog Entries stack */
+    .toc-entry {
+        grid-template-columns: 1fr; /* Image and Text stack vertically */
+        gap: 30px;
+        margin-bottom: 60px;
+    }
+
+    .era-zone {
+        padding: 40px 5%;
+    }
+
+    .blog-header h1 {
+        font-size: 1.8rem;
+    }
+
+    /* Adjust the Toggle Button for mobile */
+    .toc-toggle-btn {
+        display: block !important; /* Always visible on mobile */
+        opacity: 1 !important;
+        right: 5%;
+        top: 20px;
+        transform: none;
+    }
+}
+
+
+/* The Background Overlay */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 2000; /* Above everything else */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9); /* Darken background */
+    justify-content: center;
+    align-items: center;
+    cursor: zoom-out;
+}
+
+/* When active, show as a flex container */
+.modal.active {
+    display: flex;
+}
+
+/* The Actual Expanded Image */
+.modal-content {
+    max-width: 90%;
+    max-height: 90%;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    border: 2px solid rgba(255,255,255,0.1);
+    object-fit: contain; /* Shows the full image, no cropping */
+    animation: zoomIn 0.3s ease;
+}
+
+/* Small animation for polish */
+@keyframes zoomIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+
+/* Carousel Logic */
+.carousel-container {
+    position: relative;
+    width: 100%;
+}
+
+/* Ensure the carousel box stays a consistent size */
+.carousel-viewport {
+    height: 60vh; /* Fixed height for the "stage" */
+    background: rgba(0,0,0,0.02); /* Subtle floor for the objects */
+    display: flex;
+    align-items: center; 
+    overflow: hidden;
+    position: relative;
+    border-radius: 8px;
+}
+
+.slide {
+    min-width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* --- LANDSCAPE RULES --- */
+.slide-landscape img {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain; /* Shows the whole map */
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* --- PORTRAIT RULES --- */
+.slide-portrait img {
+    height: 100%; /* Take up full available height */
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    
+    /* That dynamic shadow we built! */
+    box-shadow: 0 10px 40px var(--portrait-shadow);
+    transition: box-shadow 0.5s ease;
+}
+
+/* The "Track" that holds all the slides in a row */
+.carousel-slides {
+    display: flex; /* This lines them up side-by-side */
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ensure slides don't shrink and stay exactly the width of the viewport */
+.slide {
+    flex: 0 0 100%; /* Do not grow, do not shrink, stay 100% width */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Re-using your portrait image rules with the variable shadow */
+.image-portrait .slide img {
+    max-height: 60vh;
+    width: auto;
+    box-shadow: 0 10px 40px var(--portrait-shadow);
+    transition: box-shadow 0.5s ease;
+}
+
+/* Nav Buttons Style */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    border: none;
+    padding: 12px 15px;
+    cursor: pointer;
+    z-index: 5;
+    border-radius: 0 4px 4px 0;
+}
+
+.next { right: 0; border-radius: 4px 0 0 4px; }
+.carousel-btn:hover { background: rgba(0, 0, 0, 0.7); }
+
+/* Caption Sync */
+.carousel-caption {
+    margin-top: 15px;
+    min-height: 1.5em; /* Prevents text jumping */
+
+
+}
